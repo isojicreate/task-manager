@@ -13,7 +13,8 @@ const loadTasks = () => {
     return tasks.map((task) => {
       return {
         id: task.id,
-        text: task.text
+        text: task.text,
+        completed: task.completed === true
       };
     });
   } catch (error) {
