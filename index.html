@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>タスク管理アプリ</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <h1>タスク管理アプリ</h1>
+      <p>タスクを追加して、完了状態を管理できます。</p>
+    </header>
+
+    <main>
+      <section class="task-form-section">
+        <h2>タスクを追加</h2>
+
+        <form id="taskForm" class="task-form">
+          <input
+            type="text"
+            id="taskInput"
+            placeholder="例：ブログ記事を書く"
+            autocomplete="off"
+          >
+          <button type="submit">追加</button>
+        </form>
+
+        <p id="errorMessage" class="error-message"></p>
+      </section>
+
+      <section class="task-list-section">
+        <h2>タスク一覧</h2>
+
+        <ul id="taskList" class="task-list">
+          <!-- JavaScriptでタスクを表示します -->
+        </ul>
+
+        <p id="emptyMessage" class="empty-message">まだタスクはありません。</p>
+      </section>
+    </main>
+  </div>
+
+  <script src="storage.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
