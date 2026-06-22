@@ -1,4 +1,5 @@
 (() => {
+  const DEFAULT_PRIORITY = 3;
   const taskForm = document.getElementById("taskForm");
   const taskInput = document.getElementById("taskInput");
   const priorityInput = document.getElementById("priorityInput");
@@ -14,15 +15,19 @@
   let editingTaskId = null;
   let sortMethod = taskSort.value;
 
-  const createTask = (text, priority, dueDate) => {
-    return {
-      id: Date.now(),
-      text,
-      completed: false,
-      priority,
-      dueDate
-    };
-  };
+  const createTask = (text, priority, dueDate) => ({
+    id: Date.now(),
+    text,
+    completed: false,
+    priority,
+    dueDate
+  });
+
+  const getTaskFormValues = () => ({
+    text: taskInput.value.trim(),
+    priority: Number(priorityInput.value),
+    dueDate: dueDateInput.value
+  });
 
   const getToday = () => {
     const today = new Date();
@@ -33,20 +38,16 @@
     return `${year}-${month}-${day}`;
   };
 
-  const sortTasks = (taskA, taskB) => {
-    if (sortMethod === "priority") {
-      return taskB.priority - taskA.priority;
+  const getDueDateGroup = (task, today) => {
+    if (!task.dueDate) {
+      return 2;
     }
 
-    const today = getToday();
-    const getDueDateGroup = (task) => {
-      if (!task.dueDate) {
-        return 2;
-      }
+    return task.dueDate < today ? 0 : 1;
+  };
 
-      return task.dueDate < today ? 0 : 1;
-    };
-    const groupDifference = getDueDateGroup(taskA) - getDueDateGroup(taskB);
+  const sortByDueDate = (taskA, taskB, today) => {
+    const groupDifference = getDueDateGroup(taskA, today) - getDueDateGroup(taskB, today);
 
     if (groupDifference !== 0) {
       return groupDifference;
@@ -59,10 +60,70 @@
     return taskA.dueDate.localeCompare(taskB.dueDate);
   };
 
-  const renderTasks = () => {
-    taskList.innerHTML = "";
+  const getSortedTasks = () => {
+    if (sortMethod === "priority") {
+      return [...tasks].sort((taskA, taskB) => taskB.priority - taskA.priority);
+    }
+
+    const today = getToday();
+    return [...tasks].sort((taskA, taskB) => sortByDueDate(taskA, taskB, today));
+  };
+
+  const saveAndRender = () => {
+    saveTasks(tasks);
+    renderTasks();
+  };
+
+  const renderTaskCount = () => {
     const completedTaskCount = tasks.filter((task) => task.completed).length;
     taskCount.textContent = `全${tasks.length}件 / 完了${completedTaskCount}件 / 未完了${tasks.length - completedTaskCount}件`;
+  };
+
+  const createTaskElement = (task) => {
+    const taskItem = document.createElement("li");
+    taskItem.className = "task-item";
+
+    if (task.completed) {
+      taskItem.classList.add("is-completed");
+    }
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = task.completed;
+    checkbox.addEventListener("change", () => toggleTaskCompleted(task.id));
+
+    const taskText = document.createElement("span");
+    taskText.className = "task-text";
+    taskText.textContent = task.text;
+
+    const taskDueDate = document.createElement("span");
+    taskDueDate.className = "task-due-date";
+    taskDueDate.textContent = task.dueDate || "期限なし";
+
+    const taskPriority = document.createElement("span");
+    taskPriority.className = "task-priority";
+    taskPriority.textContent = "★".repeat(task.priority) + "☆".repeat(5 - task.priority);
+
+    const editButton = document.createElement("button");
+    editButton.type = "button";
+    editButton.className = "edit-button";
+    editButton.textContent = "編集";
+    editButton.addEventListener("click", () => startEditingTask(task));
+
+    const deleteButton = document.createElement("button");
+    deleteButton.type = "button";
+    deleteButton.className = "delete-button";
+    deleteButton.textContent = "削除";
+    deleteButton.addEventListener("click", () => deleteTask(task.id));
+
+    taskItem.append(checkbox, taskText, taskDueDate, taskPriority, editButton, deleteButton);
+
+    return taskItem;
+  };
+
+  const renderTasks = () => {
+    taskList.innerHTML = "";
+    renderTaskCount();
 
     if (tasks.length === 0) {
       emptyMessage.classList.remove("is-hidden");
@@ -70,94 +131,26 @@
     }
 
     emptyMessage.classList.add("is-hidden");
-
-    [...tasks].sort(sortTasks).forEach((task) => {
-      const taskItem = document.createElement("li");
-      taskItem.className = "task-item";
-
-      if (task.completed) {
-        taskItem.classList.add("is-completed");
-      }
-
-      const checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      checkbox.checked = task.completed;
-
-      checkbox.addEventListener("change", () => {
-        toggleTaskCompleted(task.id);
-      });
-
-      const taskText = document.createElement("span");
-      taskText.className = "task-text";
-      taskText.textContent = task.text;
-
-      const taskPriority = document.createElement("span");
-      taskPriority.className = "task-priority";
-      taskPriority.textContent = "★".repeat(task.priority) + "☆".repeat(5 - task.priority);
-
-      const taskDueDate = document.createElement("span");
-      taskDueDate.className = "task-due-date";
-      taskDueDate.textContent = task.dueDate || "期限なし";
-
-      const editButton = document.createElement("button");
-      editButton.type = "button";
-      editButton.className = "edit-button";
-      editButton.textContent = "編集";
-
-      editButton.addEventListener("click", () => {
-        startEditingTask(task);
-      });
-
-      const deleteButton = document.createElement("button");
-      deleteButton.type = "button";
-      deleteButton.className = "delete-button";
-      deleteButton.textContent = "削除";
-
-      deleteButton.addEventListener("click", () => {
-        deleteTask(task.id);
-      });
-
-      taskItem.appendChild(checkbox);
-      taskItem.appendChild(taskText);
-      taskItem.appendChild(taskDueDate);
-      taskItem.appendChild(taskPriority);
-      taskItem.appendChild(editButton);
-      taskItem.appendChild(deleteButton);
-
-      taskList.appendChild(taskItem);
-    });
+    getSortedTasks().forEach((task) => taskList.appendChild(createTaskElement(task)));
   };
 
   const addTask = (text, priority, dueDate) => {
-    const newTask = createTask(text, priority, dueDate);
-
-    tasks.push(newTask);
-    saveTasks(tasks);
-    renderTasks();
+    tasks.push(createTask(text, priority, dueDate));
+    saveAndRender();
   };
 
   const updateTask = (taskId, text, priority, dueDate) => {
-    tasks = tasks.map((task) => {
-      if (task.id !== taskId) {
-        return task;
-      }
-
-      return {
-        ...task,
-        text,
-        priority,
-        dueDate
-      };
-    });
-
-    saveTasks(tasks);
-    renderTasks();
+    tasks = tasks.map((task) => task.id === taskId
+      ? { ...task, text, priority, dueDate }
+      : task
+    );
+    saveAndRender();
   };
 
   const resetTaskForm = () => {
     editingTaskId = null;
     taskInput.value = "";
-    priorityInput.value = "3";
+    priorityInput.value = String(DEFAULT_PRIORITY);
     dueDateInput.value = "";
     taskSubmitButton.textContent = "追加";
   };
@@ -172,26 +165,16 @@
   };
 
   const toggleTaskCompleted = (taskId) => {
-    tasks = tasks.map((task) => {
-      if (task.id !== taskId) {
-        return task;
-      }
-
-      return {
-        ...task,
-        completed: !task.completed
-      };
-    });
-
-    saveTasks(tasks);
-    renderTasks();
+    tasks = tasks.map((task) => task.id === taskId
+      ? { ...task, completed: !task.completed }
+      : task
+    );
+    saveAndRender();
   };
 
   const deleteTask = (taskId) => {
     tasks = tasks.filter((task) => task.id !== taskId);
-
-    saveTasks(tasks);
-    renderTasks();
+    saveAndRender();
 
     if (editingTaskId === taskId) {
       resetTaskForm();
@@ -201,18 +184,18 @@
   taskForm.addEventListener("submit", (event) => {
     event.preventDefault();
 
-    const taskText = taskInput.value.trim();
+    const { text, priority, dueDate } = getTaskFormValues();
 
-    if (taskText === "") {
+    if (text === "") {
       errorMessage.textContent = "タスクを入力してください。";
       return;
     }
 
     errorMessage.textContent = "";
     if (editingTaskId === null) {
-      addTask(taskText, Number(priorityInput.value), dueDateInput.value);
+      addTask(text, priority, dueDate);
     } else {
-      updateTask(editingTaskId, taskText, Number(priorityInput.value), dueDateInput.value);
+      updateTask(editingTaskId, text, priority, dueDate);
     }
     resetTaskForm();
     taskInput.focus();
