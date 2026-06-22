@@ -2,18 +2,20 @@
   const taskForm = document.getElementById("taskForm");
   const taskInput = document.getElementById("taskInput");
   const priorityInput = document.getElementById("priorityInput");
+  const dueDateInput = document.getElementById("dueDateInput");
   const taskList = document.getElementById("taskList");
   const errorMessage = document.getElementById("errorMessage");
   const emptyMessage = document.getElementById("emptyMessage");
 
   let tasks = loadTasks();
 
-  const createTask = (text, priority) => {
+  const createTask = (text, priority, dueDate) => {
     return {
       id: Date.now(),
       text,
       completed: false,
-      priority
+      priority,
+      dueDate
     };
   };
 
@@ -51,6 +53,10 @@
       taskPriority.className = "task-priority";
       taskPriority.textContent = "★".repeat(task.priority) + "☆".repeat(5 - task.priority);
 
+      const taskDueDate = document.createElement("span");
+      taskDueDate.className = "task-due-date";
+      taskDueDate.textContent = task.dueDate || "期限なし";
+
       const deleteButton = document.createElement("button");
       deleteButton.type = "button";
       deleteButton.className = "delete-button";
@@ -62,6 +68,7 @@
 
       taskItem.appendChild(checkbox);
       taskItem.appendChild(taskText);
+      taskItem.appendChild(taskDueDate);
       taskItem.appendChild(taskPriority);
       taskItem.appendChild(deleteButton);
 
@@ -69,8 +76,8 @@
     });
   };
 
-  const addTask = (text, priority) => {
-    const newTask = createTask(text, priority);
+  const addTask = (text, priority, dueDate) => {
+    const newTask = createTask(text, priority, dueDate);
 
     tasks.push(newTask);
     saveTasks(tasks);
@@ -111,8 +118,9 @@
     }
 
     errorMessage.textContent = "";
-    addTask(taskText, Number(priorityInput.value));
+    addTask(taskText, Number(priorityInput.value), dueDateInput.value);
     taskInput.value = "";
+    dueDateInput.value = "";
     taskInput.focus();
   });
 

@@ -97,7 +97,8 @@ h2 {
 }
 
 .task-item {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) 6.5rem 5.5rem auto;
   align-items: center;
   gap: 12px;
   padding: 14px 16px;
@@ -113,12 +114,18 @@ h2 {
 }
 
 .task-text {
-  flex: 1;
+  min-width: 0;
   line-height: 1.5;
 }
 
 .task-priority {
   color: #d99800;
+  white-space: nowrap;
+}
+
+.task-due-date {
+  color: #667085;
+  font-size: 0.9rem;
   white-space: nowrap;
 }
 

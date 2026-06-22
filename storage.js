@@ -17,7 +17,8 @@ const loadTasks = () => {
         completed: task.completed === true,
         priority: Number.isInteger(task.priority) && task.priority >= 1 && task.priority <= 5
           ? task.priority
-          : 3
+          : 3,
+        dueDate: typeof task.dueDate === "string" ? task.dueDate : ""
       };
     });
   } catch (error) {
