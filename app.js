@@ -6,11 +6,13 @@
   const taskSubmitButton = document.getElementById("taskSubmitButton");
   const taskList = document.getElementById("taskList");
   const taskCount = document.getElementById("taskCount");
+  const taskSort = document.getElementById("taskSort");
   const errorMessage = document.getElementById("errorMessage");
   const emptyMessage = document.getElementById("emptyMessage");
 
   let tasks = loadTasks();
   let editingTaskId = null;
+  let sortMethod = taskSort.value;
 
   const createTask = (text, priority, dueDate) => {
     return {
@@ -20,6 +22,41 @@
       priority,
       dueDate
     };
+  };
+
+  const getToday = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  };
+
+  const sortTasks = (taskA, taskB) => {
+    if (sortMethod === "priority") {
+      return taskB.priority - taskA.priority;
+    }
+
+    const today = getToday();
+    const getDueDateGroup = (task) => {
+      if (!task.dueDate) {
+        return 2;
+      }
+
+      return task.dueDate < today ? 0 : 1;
+    };
+    const groupDifference = getDueDateGroup(taskA) - getDueDateGroup(taskB);
+
+    if (groupDifference !== 0) {
+      return groupDifference;
+    }
+
+    if (!taskA.dueDate || !taskB.dueDate) {
+      return 0;
+    }
+
+    return taskA.dueDate.localeCompare(taskB.dueDate);
   };
 
   const renderTasks = () => {
@@ -34,7 +71,7 @@
 
     emptyMessage.classList.add("is-hidden");
 
-    [...tasks].sort((a, b) => b.priority - a.priority).forEach((task) => {
+    [...tasks].sort(sortTasks).forEach((task) => {
       const taskItem = document.createElement("li");
       taskItem.className = "task-item";
 
@@ -179,6 +216,11 @@
     }
     resetTaskForm();
     taskInput.focus();
+  });
+
+  taskSort.addEventListener("change", () => {
+    sortMethod = taskSort.value;
+    renderTasks();
   });
 
   renderTasks();

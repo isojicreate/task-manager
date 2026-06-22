@@ -45,10 +45,31 @@ h2 {
   color: #243b53;
 }
 
-.task-count {
+.task-list-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   margin: -8px 0 16px;
+}
+
+.task-count {
+  margin: 0;
   color: #667085;
   font-size: 0.9rem;
+}
+
+.sort-control {
+  color: #667085;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.sort-control select {
+  padding: 6px 8px;
+  font: inherit;
+  border: 1px solid #ccd6e0;
+  border-radius: 8px;
 }
 
 .task-form {
@@ -183,6 +204,11 @@ h2 {
   }
 
   .task-form {
+    flex-direction: column;
+  }
+
+  .task-list-meta {
+    align-items: flex-start;
     flex-direction: column;
   }
 

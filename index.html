@@ -40,7 +40,16 @@
 
       <section class="task-list-section">
         <h2>タスク一覧</h2>
-        <p id="taskCount" class="task-count"></p>
+        <div class="task-list-meta">
+          <p id="taskCount" class="task-count"></p>
+          <label class="sort-control">
+            並び替え：
+            <select id="taskSort">
+              <option value="priority">重要度が高い順</option>
+              <option value="dueDate">期限が近い順</option>
+            </select>
+          </label>
+        </div>
 
         <ul id="taskList" class="task-list">
           <!-- JavaScriptでタスクを表示します -->
