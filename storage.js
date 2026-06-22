@@ -14,7 +14,10 @@ const loadTasks = () => {
       return {
         id: task.id,
         text: task.text,
-        completed: task.completed === true
+        completed: task.completed === true,
+        priority: Number.isInteger(task.priority) && task.priority >= 1 && task.priority <= 5
+          ? task.priority
+          : 3
       };
     });
   } catch (error) {

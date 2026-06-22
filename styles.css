@@ -50,7 +50,8 @@ h2 {
   gap: 12px;
 }
 
-.task-form input {
+.task-form input,
+.task-form select {
   flex: 1;
   padding: 12px 14px;
   font-size: 1rem;
@@ -58,7 +59,8 @@ h2 {
   border-radius: 10px;
 }
 
-.task-form input:focus {
+.task-form input:focus,
+.task-form select:focus {
   outline: none;
   border-color: #2f80ed;
   box-shadow: 0 0 0 3px rgba(47, 128, 237, 0.16);
@@ -113,6 +115,11 @@ h2 {
 .task-text {
   flex: 1;
   line-height: 1.5;
+}
+
+.task-priority {
+  color: #d99800;
+  white-space: nowrap;
 }
 
 .task-item.is-completed .task-text {

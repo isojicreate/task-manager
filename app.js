@@ -1,18 +1,19 @@
 (() => {
   const taskForm = document.getElementById("taskForm");
   const taskInput = document.getElementById("taskInput");
+  const priorityInput = document.getElementById("priorityInput");
   const taskList = document.getElementById("taskList");
   const errorMessage = document.getElementById("errorMessage");
   const emptyMessage = document.getElementById("emptyMessage");
 
   let tasks = loadTasks();
-  console.log(tasks);
 
-  const createTask = (text) => {
+  const createTask = (text, priority) => {
     return {
       id: Date.now(),
       text,
-      completed: false
+      completed: false,
+      priority
     };
   };
 
@@ -26,7 +27,7 @@
 
     emptyMessage.classList.add("is-hidden");
 
-    tasks.forEach((task) => {
+    [...tasks].sort((a, b) => b.priority - a.priority).forEach((task) => {
       const taskItem = document.createElement("li");
       taskItem.className = "task-item";
 
@@ -46,6 +47,10 @@
       taskText.className = "task-text";
       taskText.textContent = task.text;
 
+      const taskPriority = document.createElement("span");
+      taskPriority.className = "task-priority";
+      taskPriority.textContent = "★".repeat(task.priority) + "☆".repeat(5 - task.priority);
+
       const deleteButton = document.createElement("button");
       deleteButton.type = "button";
       deleteButton.className = "delete-button";
@@ -57,14 +62,15 @@
 
       taskItem.appendChild(checkbox);
       taskItem.appendChild(taskText);
+      taskItem.appendChild(taskPriority);
       taskItem.appendChild(deleteButton);
 
       taskList.appendChild(taskItem);
     });
   };
 
-  const addTask = (text) => {
-    const newTask = createTask(text);
+  const addTask = (text, priority) => {
+    const newTask = createTask(text, priority);
 
     tasks.push(newTask);
     saveTasks(tasks);
@@ -105,7 +111,7 @@
     }
 
     errorMessage.textContent = "";
-    addTask(taskText);
+    addTask(taskText, Number(priorityInput.value));
     taskInput.value = "";
     taskInput.focus();
   });
