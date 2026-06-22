@@ -45,6 +45,12 @@ h2 {
   color: #243b53;
 }
 
+.task-count {
+  margin: -8px 0 16px;
+  color: #667085;
+  font-size: 0.9rem;
+}
+
 .task-form {
   display: flex;
   gap: 12px;

@@ -4,6 +4,7 @@
   const priorityInput = document.getElementById("priorityInput");
   const dueDateInput = document.getElementById("dueDateInput");
   const taskList = document.getElementById("taskList");
+  const taskCount = document.getElementById("taskCount");
   const errorMessage = document.getElementById("errorMessage");
   const emptyMessage = document.getElementById("emptyMessage");
 
@@ -21,6 +22,8 @@
 
   const renderTasks = () => {
     taskList.innerHTML = "";
+    const completedTaskCount = tasks.filter((task) => task.completed).length;
+    taskCount.textContent = `全${tasks.length}件 / 完了${completedTaskCount}件 / 未完了${tasks.length - completedTaskCount}件`;
 
     if (tasks.length === 0) {
       emptyMessage.classList.remove("is-hidden");
