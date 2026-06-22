@@ -104,7 +104,7 @@ h2 {
 
 .task-item {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) 6.5rem 5.5rem auto;
+  grid-template-columns: auto minmax(0, 1fr) 6.5rem 5.5rem auto auto;
   align-items: center;
   gap: 12px;
   padding: 14px 16px;
@@ -151,6 +151,19 @@ h2 {
 
 .delete-button:hover {
   background: #fff1f1;
+}
+
+.edit-button {
+  padding: 8px 10px;
+  color: #1f4f8f;
+  background: #fff;
+  border: 1px solid #b9d2ee;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.edit-button:hover {
+  background: #eef6ff;
 }
 
 .empty-message {

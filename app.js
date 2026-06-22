@@ -3,12 +3,14 @@
   const taskInput = document.getElementById("taskInput");
   const priorityInput = document.getElementById("priorityInput");
   const dueDateInput = document.getElementById("dueDateInput");
+  const taskSubmitButton = document.getElementById("taskSubmitButton");
   const taskList = document.getElementById("taskList");
   const taskCount = document.getElementById("taskCount");
   const errorMessage = document.getElementById("errorMessage");
   const emptyMessage = document.getElementById("emptyMessage");
 
   let tasks = loadTasks();
+  let editingTaskId = null;
 
   const createTask = (text, priority, dueDate) => {
     return {
@@ -60,6 +62,15 @@
       taskDueDate.className = "task-due-date";
       taskDueDate.textContent = task.dueDate || "期限なし";
 
+      const editButton = document.createElement("button");
+      editButton.type = "button";
+      editButton.className = "edit-button";
+      editButton.textContent = "編集";
+
+      editButton.addEventListener("click", () => {
+        startEditingTask(task);
+      });
+
       const deleteButton = document.createElement("button");
       deleteButton.type = "button";
       deleteButton.className = "delete-button";
@@ -73,6 +84,7 @@
       taskItem.appendChild(taskText);
       taskItem.appendChild(taskDueDate);
       taskItem.appendChild(taskPriority);
+      taskItem.appendChild(editButton);
       taskItem.appendChild(deleteButton);
 
       taskList.appendChild(taskItem);
@@ -85,6 +97,41 @@
     tasks.push(newTask);
     saveTasks(tasks);
     renderTasks();
+  };
+
+  const updateTask = (taskId, text, priority, dueDate) => {
+    tasks = tasks.map((task) => {
+      if (task.id !== taskId) {
+        return task;
+      }
+
+      return {
+        ...task,
+        text,
+        priority,
+        dueDate
+      };
+    });
+
+    saveTasks(tasks);
+    renderTasks();
+  };
+
+  const resetTaskForm = () => {
+    editingTaskId = null;
+    taskInput.value = "";
+    priorityInput.value = "3";
+    dueDateInput.value = "";
+    taskSubmitButton.textContent = "追加";
+  };
+
+  const startEditingTask = (task) => {
+    editingTaskId = task.id;
+    taskInput.value = task.text;
+    priorityInput.value = task.priority;
+    dueDateInput.value = task.dueDate;
+    taskSubmitButton.textContent = "更新";
+    taskInput.focus();
   };
 
   const toggleTaskCompleted = (taskId) => {
@@ -108,6 +155,10 @@
 
     saveTasks(tasks);
     renderTasks();
+
+    if (editingTaskId === taskId) {
+      resetTaskForm();
+    }
   };
 
   taskForm.addEventListener("submit", (event) => {
@@ -121,9 +172,12 @@
     }
 
     errorMessage.textContent = "";
-    addTask(taskText, Number(priorityInput.value), dueDateInput.value);
-    taskInput.value = "";
-    dueDateInput.value = "";
+    if (editingTaskId === null) {
+      addTask(taskText, Number(priorityInput.value), dueDateInput.value);
+    } else {
+      updateTask(editingTaskId, taskText, Number(priorityInput.value), dueDateInput.value);
+    }
+    resetTaskForm();
     taskInput.focus();
   });
 
