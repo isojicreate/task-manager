@@ -10,7 +10,7 @@ body {
 }
 
 .app {
-  width: min(92%, 720px);
+  width: min(92%, 740px);
   margin: 48px auto;
   padding: 32px;
   background: #fff;
