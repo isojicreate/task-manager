@@ -5,6 +5,7 @@
   const priorityInput = document.getElementById("priorityInput");
   const dueDateInput = document.getElementById("dueDateInput");
   const taskSubmitButton = document.getElementById("taskSubmitButton");
+  const taskCancelButton = document.getElementById("taskCancelButton");
   const taskList = document.getElementById("taskList");
   const taskCount = document.getElementById("taskCount");
   const taskSort = document.getElementById("taskSort");
@@ -153,6 +154,7 @@
     priorityInput.value = String(DEFAULT_PRIORITY);
     dueDateInput.value = "";
     taskSubmitButton.textContent = "追加";
+    taskCancelButton.hidden = true;
   };
 
   const startEditingTask = (task) => {
@@ -161,6 +163,7 @@
     priorityInput.value = task.priority;
     dueDateInput.value = task.dueDate;
     taskSubmitButton.textContent = "更新";
+    taskCancelButton.hidden = false;
     taskInput.focus();
   };
 
@@ -204,6 +207,12 @@
   taskSort.addEventListener("change", () => {
     sortMethod = taskSort.value;
     renderTasks();
+  });
+
+  taskCancelButton.addEventListener("click", () => {
+    resetTaskForm();
+    errorMessage.textContent = "";
+    taskInput.focus();
   });
 
   renderTasks();
