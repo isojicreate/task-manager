@@ -86,6 +86,25 @@ h2 {
   border-radius: 10px;
 }
 
+.due-date-field {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.task-form .due-date-field input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  color: #222;
+  background: #fff;
+  font-family: inherit;
+}
+
+.due-date-placeholder {
+  display: none;
+}
+
 .task-form input:focus,
 .task-form select:focus {
   outline: none;
@@ -219,6 +238,33 @@ h2 {
 
   .task-form {
     flex-direction: column;
+  }
+
+  .app-header h1 {
+    font-size: 1.6rem;
+  }
+
+  .app-header p {
+    text-align: left;
+  }
+
+  .due-date-placeholder {
+    position: absolute;
+    top: 50%;
+    left: 14px;
+    display: block;
+    color: #667085;
+    font-size: 1rem;
+    pointer-events: none;
+    transform: translateY(-50%);
+  }
+
+  .due-date-field.has-value .due-date-placeholder {
+    display: none;
+  }
+
+  .due-date-field:not(.has-value) input::-webkit-datetime-edit {
+    color: transparent;
   }
 
   .task-list-meta {

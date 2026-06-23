@@ -4,6 +4,7 @@
   const taskInput = document.getElementById("taskInput");
   const priorityInput = document.getElementById("priorityInput");
   const dueDateInput = document.getElementById("dueDateInput");
+  const dueDateField = dueDateInput.parentElement;
   const taskSubmitButton = document.getElementById("taskSubmitButton");
   const taskCancelButton = document.getElementById("taskCancelButton");
   const taskList = document.getElementById("taskList");
@@ -29,6 +30,10 @@
     priority: Number(priorityInput.value),
     dueDate: dueDateInput.value
   });
+
+  const updateDueDatePlaceholder = () => {
+    dueDateField.classList.toggle("has-value", dueDateInput.value !== "");
+  };
 
   const getToday = () => {
     const today = new Date();
@@ -153,6 +158,7 @@
     taskInput.value = "";
     priorityInput.value = String(DEFAULT_PRIORITY);
     dueDateInput.value = "";
+    updateDueDatePlaceholder();
     taskSubmitButton.textContent = "追加";
     taskCancelButton.hidden = true;
   };
@@ -162,6 +168,7 @@
     taskInput.value = task.text;
     priorityInput.value = task.priority;
     dueDateInput.value = task.dueDate;
+    updateDueDatePlaceholder();
     taskSubmitButton.textContent = "更新";
     taskCancelButton.hidden = false;
     taskInput.focus();
@@ -209,11 +216,14 @@
     renderTasks();
   });
 
+  dueDateInput.addEventListener("input", updateDueDatePlaceholder);
+
   taskCancelButton.addEventListener("click", () => {
     resetTaskForm();
     errorMessage.textContent = "";
     taskInput.focus();
   });
 
+  updateDueDatePlaceholder();
   renderTasks();
 })();

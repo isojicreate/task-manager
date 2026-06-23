@@ -31,7 +31,10 @@
             <option value="4">重要度 4</option>
             <option value="5">重要度 5</option>
           </select>
-          <input type="date" id="dueDateInput" aria-label="期限日">
+          <div class="due-date-field">
+            <input type="date" id="dueDateInput" aria-label="期限日">
+            <span class="due-date-placeholder" aria-hidden="true">年 / 月 / 日</span>
+          </div>
           <button type="submit" id="taskSubmitButton">追加</button>
           <button type="button" id="taskCancelButton" class="cancel-button" hidden>キャンセル</button>
         </form>
