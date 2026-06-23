@@ -67,12 +67,18 @@
   };
 
   const getSortedTasks = () => {
-    if (sortMethod === "priority") {
-      return [...tasks].sort((taskA, taskB) => taskB.priority - taskA.priority);
-    }
-
     const today = getToday();
-    return [...tasks].sort((taskA, taskB) => sortByDueDate(taskA, taskB, today));
+    return [...tasks].sort((taskA, taskB) => {
+      if (taskA.completed !== taskB.completed) {
+        return Number(taskA.completed) - Number(taskB.completed);
+      }
+
+      if (sortMethod === "priority") {
+        return taskB.priority - taskA.priority;
+      }
+
+      return sortByDueDate(taskA, taskB, today);
+    });
   };
 
   const saveAndRender = () => {
