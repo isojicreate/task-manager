@@ -108,6 +108,20 @@ h2 {
   background: #1c6ed6;
 }
 
+.task-form .cancel-button {
+  padding: 8px 10px;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: #475467;
+  background: #fff;
+  border: 1px solid #ccd6e0;
+  white-space: nowrap;
+}
+
+.task-form .cancel-button:hover {
+  background: #f8fafc;
+}
+
 .error-message {
   min-height: 1.5em;
   margin: 8px 0 0;
